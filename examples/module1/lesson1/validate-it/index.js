@@ -1,28 +1,15 @@
-function validator() {
+import { validator } from "./data/validator.js";
+
+
+function Main() {
   const input = document.getElementById('input');
   const button = document.getElementById('button');
   const button2 = document.getElementById('button2');
   const result = document.getElementById('result');
 
   button.addEventListener('click', () => {
-    if (input.value) {
-      if (Number.isInteger(input.value)) {
-        if (
-          Number(input.value) > 0 &&
-          Number(input.value) < 100 &&
-          Number(input.value) % 2 === 0
-        ) {
-          result.innerHTML = 'Valid';
-        } else {
-          result.innerHTML = 'Invalid';
-        }
-        result.innerHTML = 'Valid';
-      } else {
-        result.innerHTML = 'Invalid';
-      }
-    } else {
-      result.innerHTML = 'Invalid';
-    }
+    const validationMessage = validator(input.value);
+    result.innerHTML = validationMessage;
   });
 
   button2.addEventListener('click', () => {
@@ -31,4 +18,4 @@ function validator() {
   });
 }
 
-validator();
+Main();
