@@ -1,9 +1,26 @@
-import { useContext } from 'react';
 import Product from '../components/Product';
-import { ProductContext } from '../contexts/ProductContext';
+import { useAppDispatch, useAppSelector } from '../hooks/rtk';
+import React, { useEffect } from 'react';
+import { fetchProducts, selectProducts } from '../state/productSlice';
+import { Product as ProductType } from '../types/Product';
 
 const Home = () => {
-  const { products } = useContext(ProductContext);
+  const dispatch = useAppDispatch();
+  const products: ProductType[] = useAppSelector(selectProducts);
+  useEffect(() => {
+    if (products.length === 0) {
+      dispatch(fetchProducts())
+        .unwrap()
+        .then(() => {
+          console.log('Products fetched successfully');
+        })
+        .catch((error) => {
+          console.error('Failed to fetch products:', error);
+        });
+    }
+  }, [dispatch, products.length]);
+
+  console.log(products);
 
   return (
     <div>
