@@ -1,26 +1,18 @@
 import Product from '../components/Product';
-import { useAppDispatch, useAppSelector } from '../hooks/rtk';
-import React, { useEffect } from 'react';
-import { fetchProducts, selectProducts } from '../state/productSlice';
+
 import { Product as ProductType } from '../types/Product';
+import { useGetProductsQuery } from '../services/products';
 
 const Home = () => {
-  const dispatch = useAppDispatch();
-  const products: ProductType[] = useAppSelector(selectProducts);
-  useEffect(() => {
-    if (products.length === 0) {
-      dispatch(fetchProducts())
-        .unwrap()
-        .then(() => {
-          console.log('Products fetched successfully');
-        })
-        .catch((error) => {
-          console.error('Failed to fetch products:', error);
-        });
-    }
-  }, [dispatch, products.length]);
+  const { data: products, error, isLoading } = useGetProductsQuery();
 
-  console.log(products);
+  if (isLoading) {
+    return <div>Loading...</div>;
+  }
+
+  if (error) {
+    return <div>Error occurred while fetching products.</div>;
+  }
 
   return (
     <div>
@@ -30,9 +22,10 @@ const Home = () => {
             Explore Our Products
           </h1>
           <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-5 lg:mx-8 gap-[30px] max-w-sm mx-auto md:max-w-none md:mx-0">
-            {products.map((product) => {
-              return <Product product={product} key={product.id} />;
-            })}
+            {products &&
+              products.map((product: ProductType) => (
+                <Product product={product} key={product.id} />
+              ))}
           </div>
         </div>
       </section>
